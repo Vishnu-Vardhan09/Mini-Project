@@ -21,11 +21,13 @@ def index():
 
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
+
 # Route to handle form submission
 @app.route('/process', methods=['POST'])
 def process_text():
     input_text = request.form.get('inputText', '')
-    processed_text=summarizer(input_text, max_length=192, min_length=30, do_sample=False)
+    max_len = request.form.get('length', '')
+    processed_text=summarizer(input_text, max_length=250, min_length=int(max_len), do_sample=False)
     output_text=processed_text[0]["summary_text"]
     response = make_response(output_text)
     response.mimetype = "text/plain"
